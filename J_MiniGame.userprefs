@@ -1,0 +1,52 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Script\JGame\JNetwork\JNetwork.cs">
+    <Files>
+      <File FileName="Assets\Script\Scene_sign_in\SignInNet.cs" Line="87" Column="77" />
+      <File FileName="Assets\Script\JGame\JGameManager.cs" Line="56" Column="8" />
+      <File FileName="Assets\Script\JGame\JGameUtil.cs" Line="46" Column="1" />
+      <File FileName="Assets\Script\Scene_sign_in\GameLoader.cs" Line="22" Column="40" />
+      <File FileName="Assets\Script\Scene_sign_in\MySqlAccess.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Scene_sign_in\MySqlFunction.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Scene_sign_in\progress_init.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\Scene_sign_in\sign_in.cs" Line="1" Column="1" />
+      <File FileName="Assets\Script\JGame\JStreamObject\JGameObjects.cs" Line="25" Column="1" />
+      <File FileName="Assets\Script\JGame\JStreamObject\JGameObjDefines.cs" Line="23" Column="10" />
+      <File FileName="Assets\Script\JGame\JStreamObject\JbinaryReaderWriter.cs" Line="77" Column="1" />
+      <File FileName="Assets\Script\JGame\JNetwork\JNetwork.cs" Line="21" Column="10" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="J_MiniGame" expanded="True">
+            <Node name="Assembly-CSharp" expanded="True">
+              <Node name="Script" expanded="True">
+                <Node name="JGame" expanded="True">
+                  <Node name="JNetwork" expanded="True" selected="True" />
+                  <Node name="JStreamObject" expanded="True" />
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State name="__root__">
+          <Node name="J_MiniGame" expanded="True" selected="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="D:\unity\J_MiniGame\Assets\Script\Scene_sign_in\SignInNet.cs" line="36" column="12" />
+      <Breakpoint file="D:\unity\J_MiniGame\Assets\Script\Scene_sign_in\SignInNet.cs" line="74" column="5" />
+      <Breakpoint file="D:\unity\J_MiniGame\Assets\Script\Scene_sign_in\SignInNet.cs" line="91" column="15" />
+      <Breakpoint file="D:\unity\J_MiniGame\Assets\Script\Scene_sign_in\SignInNet.cs" line="84" column="5" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
