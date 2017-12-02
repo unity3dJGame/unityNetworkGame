@@ -169,7 +169,14 @@ qrc_*.cxx
 .idea/
 
 #cache file 
-Library/metadata/
+[Ll]ibrary/
+DepthOfField.cs
+Temp/
+Assets/System Assets/
+Assets/resources/
 *.meta
 *.bin
 *.info
+*.mdb
+*.stamp
+*.dll.mdb
