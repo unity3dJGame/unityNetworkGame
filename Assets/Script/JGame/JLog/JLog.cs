@@ -1,15 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace JGame.Log
+namespace JGame
 {
+	using JGame.Log;
+	using JGame.Log.LogSettings;
+
 	public class JLog
 	{
 		#region public part
-		public static void Initialize (JLogMessagesQueue messages = null, List<LogSettings.JLogSettings> settings = null)
+		public static void Initialize (JLogMessagesQueue messages = null, List<JLogSettings> settings = null)
 		{
 			//
-			LogSettings.JLogSpecifiedMessagesQueue.MessagesQueue = messages;
+			JLogSpecifiedMessagesQueue.MessagesQueue = messages;
 		}
 
 		public static void Debug(string log, JLogCategory logCat= JLogCategory.Common)
