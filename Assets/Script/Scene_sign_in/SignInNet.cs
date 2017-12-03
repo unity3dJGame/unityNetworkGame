@@ -10,8 +10,8 @@ using UnityEngine.SceneManagement;
 using JGame;
 using JGame.StreamObject;
 using JGame.Network;
-
-
+using JGame.Data;
+using JGame.Processer;
 
 public class SignInNet : MonoBehaviour {
 	public Text _user_account;		//用户账号
@@ -33,6 +33,20 @@ public class SignInNet : MonoBehaviour {
 	//登录检查
 	public void CheckToSignIn ()
 	{
+		JObj_SignIn obj2 = new JObj_SignIn();
+		obj2._strAccount = _user_account.text;
+		obj2._strCode = _user_code.text;
+
+		UserData data = new UserData ();
+		data.setData (obj2);
+
+		JProcesserSignInSet proSet = new JProcesserSignInSet ();
+		proSet.run (data);
+		JProcesserSignInGet proGet = new JProcesserSignInGet ();
+		proGet.run (data);
+
+		return;
+
 		IPAddress ip_server = IPAddress.Parse (_server_ip); 
 		IPEndPoint server_edp = new IPEndPoint (ip_server, _server_port);
 		_client_socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

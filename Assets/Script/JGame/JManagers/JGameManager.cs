@@ -51,6 +51,7 @@ namespace JGame
 			foreach (Type curType in asmbs.GetTypes()) {
 				try
 				{
+					JLog.Info(curType.Namespace);
 					if (_toLoadNamespaces.Contains (curType.Namespace)) {
 						if (curType.IsClass) {
 							MethodInfo methodinfo = curType.GetMethod("Type");
@@ -63,7 +64,7 @@ namespace JGame
 					}
 				}
 				catch(Exception e) {
-					Debug.LogError (e.Message);
+					JLog.Error (e.Message);
 				}
 			}
 		}
@@ -71,12 +72,12 @@ namespace JGame
 		public void RegisterStreamObj(ushort objType, string typeName)
 		{
 			if (typeName == null) {
-				Debug.LogError ("JGameManager.RegisterStreamObj empty  object type");
+				JLog.Error("JGameManager.RegisterStreamObj empty  object type");
 				return;
 			}
 
 			if (_typeToTypeName.ContainsKey (objType)) {
-				Debug.LogError ("JGameManager.RegisterStreamObj registed  object type"+typeName);
+				JLog.Error("JGameManager.RegisterStreamObj registed  object type"+typeName);
 				return;
 			}
 
@@ -86,7 +87,7 @@ namespace JGame
 		public string GetStreamObjTypeName (ushort objType)
 		{
 			if (!_typeToTypeName.ContainsKey (objType)) {
-				Debug.LogError ("JGameManager.RegisterStreamObj can not find object type name of type:"
+				JLog.Error("JGameManager.RegisterStreamObj can not find object type name of type:"
 					+JGameUtil.GetDescription((StreamObject.JObjectType)objType));
 				return null;
 			}

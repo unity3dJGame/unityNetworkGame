@@ -11,12 +11,16 @@ namespace JGame
 		#region public part
 		public static void Initialize (JLogMessagesQueue messages = null, List<JLogSettings> settings = null)
 		{
-			if (null == settings) {
+			if (null == messages) {
 				messages = new JLogMessagesQueue ();
+				messages.LogMessages = new Queue<JLogMessage> ();
+			}
+
+			if (null == settings) {
 
 				settings = new List<JLogSettings> ();
 				JLogSettings logst = new JLogSettings();
-				logst.LogFileDir = string.Format(@"{0}/{log/}",System.Environment.CurrentDirectory);
+				logst.LogFileDir = string.Format("{0}/log/",System.Environment.CurrentDirectory);
 				logst.LogFileNamePrefix = new Dictionary<JLogType, string> { };
 				logst.LogFileNameStem = 
 					new Dictionary<JLogCategory, string> {  {JLogCategory.Common, ""}, 
