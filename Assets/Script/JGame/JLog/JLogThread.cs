@@ -104,12 +104,16 @@ namespace JGame.Log
 						if (!_writers.ContainsKey(strFileName))
 						{
 							StreamWriter writer = new StreamWriter(strFileName, true, System.Text.Encoding.UTF8);
+							_writers[strFileName] = writer;
 						}
-						else{
-							string msgText = string.Format("{0}{1}{2}", 
-								writeMsg.LogType.GetDescription(), writeMsg.LogCategory.GetDescription(), writeMsg.LogMessage);
-							_writers[strFileName].WriteLine(msgText);
-						}
+
+						FileInfo dir = new FileInfo(strFileName);
+						if (!dir.Directory.Exists)
+							dir.Create();
+						
+						string msgText = string.Format("{0}{1}{2}", 
+							writeMsg.LogType.GetDescription(), writeMsg.LogCategory.GetDescription(), writeMsg.LogMessage);
+						_writers[strFileName].WriteLine(msgText);
 					}
 				}
 				catch(Exception e)
