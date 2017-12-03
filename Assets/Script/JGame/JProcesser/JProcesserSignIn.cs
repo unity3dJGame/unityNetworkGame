@@ -50,10 +50,6 @@ namespace JGame
 			}
 
 			#region 私有方法
-			protected bool connectServer()
-			{
-				return JSocket.Client_socket.Connected;
-			}
 
 			protected bool SendToServer(JObj_SignIn obj)
 			{
@@ -96,7 +92,7 @@ namespace JGame
 				JObj_SignIn signInObj = obj as JObj_SignIn;
 				if (signInObj == null)
 					return;
-				if (connectServer ())
+				if (JSocket.Client_socket.Connected)
 					SendToServer (signInObj);
 			}
 		}
@@ -105,7 +101,7 @@ namespace JGame
 		{
 			public override void run(IDataSet dataSet)
 			{
-				if (connectServer ()) {
+				if (JSocket.Client_socket.Connected) {
 					IStreamObj obj = getObjFromServer ();
 					dataSet.setData (obj);
 				}
