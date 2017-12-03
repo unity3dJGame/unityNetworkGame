@@ -1,10 +1,25 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.
 
 namespace JGame.Log.LogSettings
 {
+	public class JLogSpecifiedSettingsSet
+	{
+		public static List<JLogSettings> JLogSettingsList {
+			set;
+			get;
+		}
+	}
+	public class JLogSpecifiedMessagesQueue
+	{
+		public static JLogMessagesQueue MessagesQueue
+		{
+			set;
+			get;
+		}
+	}
+
 	public class JLogSettings
 	{
 		public static JLogSpecifiedMessagesQueue SpecifiedMsgsQueu 
@@ -31,13 +46,5 @@ namespace JGame.Log.LogSettings
 		}
 	}
 
-	public class JLogSpecifiedMessagesQueue
-	{
-		public JLogMessagesQueue MessagesQueue
-		{
-			set;
-			get;
-		}
-	}
 }
 

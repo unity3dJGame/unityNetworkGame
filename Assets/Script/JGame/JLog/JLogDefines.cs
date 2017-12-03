@@ -40,5 +40,6 @@ namespace JGame.Log
 	{
 		public Queue<JLogMessage> LogMessages;
 	}
+
 }
 

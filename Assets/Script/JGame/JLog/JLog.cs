@@ -6,10 +6,10 @@ namespace JGame.Log
 	public class JLog
 	{
 		#region public part
-		public static void Initialize (JLogMessagesQueue messages = null, string str)
+		public static void Initialize (JLogMessagesQueue messages = null, List<LogSettings.JLogSettings> settings = null)
 		{
 			//
-			JLogSpecifiedMessagesQueue.MessagesQueue = messages;
+			LogSettings.JLogSpecifiedMessagesQueue.MessagesQueue = messages;
 		}
 
 		public static void Debug(string log, JLogCategory logCat= JLogCategory.Common)
