@@ -7,25 +7,25 @@ namespace JGame.Log
 {
 	public enum JLogType
 	{
-		[Description("调试")]
+		[Description("[Debug]")]
 		Debug = 0,
-		[Description("普通信息")]
+		[Description("[Info ]")]
 		Info,
-		[Description("警告")]
+		[Description("[warn ]")]
 		Warn,
-		[Description("错误")]
+		[Description("[Error]")]
 		Error,
-		[Description("致命")]
+		[Description("[Fatal]")]
 		Fatal
 	}
 
 	public enum JLogCategory
 	{
-		[Description("常规")]
+		[Description("Common")]
 		Common = 0,
-		[Description("网络")]
+		[Description("Network")]
 		Network,
-		[Description("线程")]
+		[Description("Thread")]
 		Thread,
 	}
 

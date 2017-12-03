@@ -15,6 +15,7 @@ namespace JGame.Log
 		private static object _setting_lock;
 		private static Semaphore _semaphore;
 		private static bool  _inited = false;
+		private static Thread _thread;
 
 		public static void Initialize()
 		{
@@ -22,8 +23,8 @@ namespace JGame.Log
 			_setting_lock = new object ();
 			_semaphore = new Semaphore (0, int.MaxValue, "JLogSemaphore");
 			_writers = new Dictionary<string, StreamWriter> ();
-			Thread thread = new Thread (run) { IsBackground = true };
-			thread.Start ();
+			_thread = new Thread (run) { IsBackground = true };
+			_thread.Start ();
 			_inited = true;
 		}
 
@@ -75,6 +76,10 @@ namespace JGame.Log
 				}
 				else if (!WaitLogMessage())
 				{
+					foreach (StreamWriter writer in _writers.Values) {
+						writer.Flush ();
+						writer.Close ();
+					}
 					break;
 				}
 			}
@@ -83,10 +88,17 @@ namespace JGame.Log
 
 		private static bool WaitLogMessage()
 		{
-			WaitHandle.WaitAny (new WaitHandle[]{ _semaphore }, -1, false);
-			return false;
+			//WaitHandle.WaitAny (new WaitHandle[]{ _semaphore }, -1, false);
+			if (_semaphore.WaitOne ())
+				return true;
+			else
+				return false;
 		}
 
+		private void CloseAllFile()
+		{
+			
+		}
 		private static void WriteMessageToFile(JLogMessage writeMsg)
 		{
 			lock (_setting_lock)
@@ -98,22 +110,26 @@ namespace JGame.Log
 
 					foreach( JLogSettings setting in JLogSpecifiedSettingsSet.JLogSettingsList)
 					{
-						string strFileName = string.Format("{0}{1}{2}{3}",
-							setting.LogFileDir, setting.LogFileNamePrefix, setting.LogFileNameStem, setting.LogFileNameSuffix);
+						string strPrefix = setting.LogFileNamePrefix.ContainsKey(writeMsg.LogType) ? setting.LogFileNamePrefix[writeMsg.LogType] : "";
+						string strStem = setting.LogFileNameStem.ContainsKey(writeMsg.LogCategory) ? setting.LogFileNameStem[writeMsg.LogCategory] : "";
+						string strFileName = string.Format("{0}log_{1}{2}{3}",
+							setting.LogFileDir, strPrefix, strStem, setting.LogFileNameSuffix);
 
+						if (!Directory.Exists(setting.LogFileDir))
+							Directory.CreateDirectory(setting.LogFileDir);
+						
 						if (!_writers.ContainsKey(strFileName))
 						{
 							StreamWriter writer = new StreamWriter(strFileName, true, System.Text.Encoding.UTF8);
 							_writers[strFileName] = writer;
 						}
 
-						FileInfo dir = new FileInfo(strFileName);
-						if (!dir.Directory.Exists)
-							dir.Create();
+
 						
 						string msgText = string.Format("{0}{1}{2}", 
 							writeMsg.LogType.GetDescription(), writeMsg.LogCategory.GetDescription(), writeMsg.LogMessage);
 						_writers[strFileName].WriteLine(msgText);
+						_writers[strFileName].Flush();
 					}
 				}
 				catch(Exception e)
