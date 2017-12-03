@@ -11,8 +11,25 @@ namespace JGame
 		#region public part
 		public static void Initialize (JLogMessagesQueue messages = null, List<JLogSettings> settings = null)
 		{
-			//
+			if (null == settings) {
+				messages = new JLogMessagesQueue ();
+
+				settings = new List<JLogSettings> ();
+				JLogSettings logst = new JLogSettings();
+				logst.LogFileDir = string.Format(@"{0}/{log/}",System.Environment.CurrentDirectory);
+				logst.LogFileNamePrefix = new Dictionary<JLogType, string> { };
+				logst.LogFileNameStem = 
+					new Dictionary<JLogCategory, string> {  {JLogCategory.Common, ""}, 
+															{JLogCategory.Network, "Network"},
+															{JLogCategory.Thread, "Thread"} };
+				
+				logst.LogFileNameSuffix = ".txt";
+				settings.Add (logst);
+			}
+			JLogSpecifiedSettingsSet.JLogSettingsList = settings;
 			JLogSpecifiedMessagesQueue.MessagesQueue = messages;
+
+			JLogThread.Initialize ();
 		}
 
 		public static void Debug(string log, JLogCategory logCat= JLogCategory.Common)
@@ -40,7 +57,8 @@ namespace JGame
 		#region private part
 		private static void WriteLog(string log, JLogType logType, JLogCategory logCat= JLogCategory.Common)
 		{
-			
+			JLogMessage msg = new JLogMessage { LogType = logType,LogCategory = logCat, LogMessage = log };
+			JLogThread.AddMessage (msg);
 		}
 		#endregion
 

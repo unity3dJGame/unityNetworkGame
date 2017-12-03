@@ -7,6 +7,8 @@ using System.IO;
 
 namespace JGame
 {
+	using JGame.Log;
+
 	public class JGameManager
 	{
 		private static JGameManager _singleInstance;
@@ -41,6 +43,10 @@ namespace JGame
 			_toLoadNamespaces = new HashSet<string> ();
 			_toLoadNamespaces.Add ("JGame.StreamObject");
 
+			//initialize log system.
+			JLog.Initialize ();
+
+			//register stream objects.
 			Assembly asmbs =  Assembly.GetExecutingAssembly ();
 			foreach (Type curType in asmbs.GetTypes()) {
 				try

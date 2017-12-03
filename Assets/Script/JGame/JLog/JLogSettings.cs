@@ -22,12 +22,12 @@ namespace JGame.Log.LogSettings
 
 	public class JLogSettings
 	{
-		public static JLogSpecifiedMessagesQueue SpecifiedMsgsQueu 
+		public JLogSpecifiedMessagesQueue SpecifiedMsgsQueu 
 		{
 			set;
 			get;
 		}
-		public static string LogFileDir 
+		public string LogFileDir 
 		{
 			set;
 			get;

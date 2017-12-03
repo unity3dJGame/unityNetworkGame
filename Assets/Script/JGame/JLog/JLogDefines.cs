@@ -31,9 +31,9 @@ namespace JGame.Log
 
 	public class JLogMessage
 	{
-		public static JLogType		LogType;
-		public static JLogCategory	LogCategory;
-		public static string 		LogMessage;
+		public JLogType		LogType { set; get; }
+		public JLogCategory	LogCategory { set; get; }
+		public string 		LogMessage { set; get; }
 	}
 
 	public class JLogMessagesQueue
