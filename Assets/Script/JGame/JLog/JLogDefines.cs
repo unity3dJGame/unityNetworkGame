@@ -21,11 +21,11 @@ namespace JGame.Log
 
 	public enum JLogCategory
 	{
-		[Description("Common")]
+		[Description("[Common ]")]
 		Common = 0,
-		[Description("Network")]
+		[Description("[Network]")]
 		Network,
-		[Description("Thread")]
+		[Description("[Thread ]")]
 		Thread,
 	}
 

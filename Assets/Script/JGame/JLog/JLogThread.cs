@@ -10,7 +10,7 @@ namespace JGame.Log
 
 	public class JLogThread
 	{
-		private static Dictionary<string, StreamWriter> _writers;
+		//private static Dictionary<string, StreamWriter> _writers;
 		private static object _message_lock;
 		private static object _setting_lock;
 		private static Semaphore _semaphore;
@@ -22,7 +22,7 @@ namespace JGame.Log
 			_message_lock = new object ();
 			_setting_lock = new object ();
 			_semaphore = new Semaphore (0, int.MaxValue, "JLogSemaphore");
-			_writers = new Dictionary<string, StreamWriter> ();
+			//_writers = new Dictionary<string, StreamWriter> ();
 			_thread = new Thread (run) { IsBackground = true };
 			_thread.Start ();
 			_inited = true;
@@ -76,10 +76,10 @@ namespace JGame.Log
 				}
 				else if (!WaitLogMessage())
 				{
-					foreach (StreamWriter writer in _writers.Values) {
+					/*foreach (StreamWriter writer in _writers.Values) {
 						writer.Flush ();
 						writer.Close ();
-					}
+					}*/
 					break;
 				}
 			}
@@ -112,24 +112,29 @@ namespace JGame.Log
 					{
 						string strPrefix = setting.LogFileNamePrefix.ContainsKey(writeMsg.LogType) ? setting.LogFileNamePrefix[writeMsg.LogType] : "";
 						string strStem = setting.LogFileNameStem.ContainsKey(writeMsg.LogCategory) ? setting.LogFileNameStem[writeMsg.LogCategory] : "";
-						string strFileName = string.Format("{0}log_{1}{2}{3}",
+						string strFileName = string.Format("{0}log{1}{2}{3}",
 							setting.LogFileDir, strPrefix, strStem, setting.LogFileNameSuffix);
 
 						if (!Directory.Exists(setting.LogFileDir))
 							Directory.CreateDirectory(setting.LogFileDir);
 						
-						if (!_writers.ContainsKey(strFileName))
-						{
+						/*if (!_writers.ContainsKey(strFileName))
+						{*/
 							StreamWriter writer = new StreamWriter(strFileName, true, System.Text.Encoding.UTF8);
-							_writers[strFileName] = writer;
-						}
+						/*	_writers[strFileName] = writer;
+						}*/
 
 
 						
-						string msgText = string.Format("{0}{1}{2}", 
+						string msgText = string.Format("{0} {1} {2} : {3}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff"),
 							writeMsg.LogType.GetDescription(), writeMsg.LogCategory.GetDescription(), writeMsg.LogMessage);
-						_writers[strFileName].WriteLine(msgText);
+
+						writer.WriteLine(msgText);
+						writer.Flush();
+						writer.Close();
+						/*_writers[strFileName].WriteLine(msgText);
 						_writers[strFileName].Flush();
+						*/
 					}
 				}
 				catch(Exception e)
