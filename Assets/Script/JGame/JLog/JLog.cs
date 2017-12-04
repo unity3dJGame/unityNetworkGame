@@ -67,10 +67,4 @@ namespace JGame
 		#endregion
 
 	}
-
-
-	public class JLogWriter
-	{
-	}
-
 }
