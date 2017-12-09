@@ -15,7 +15,7 @@ namespace JGame.Network
 		private static JServerSocketManager _manager = null;
 		private static Thread				_serverReceiveThread = null;
 		private static Thread				_serverAcceptThread = null;
-		private static bool					_initialzed = false;
+		private static bool					_initialized = false;
 		private static Semaphore			_semaphore = null;
 		private static object				_socketLocker = null;
 		private static object				_dataLocker = null;
@@ -26,13 +26,15 @@ namespace JGame.Network
 			JConnectedClientSocket.sockets = new List<Socket> ();
 		}
 
-		public JServerSocketManager SingleInstance()
+		public static JServerSocketManager SingleInstance
 		{
-			if (null == _manager) {
-				JServerSocketManager manager = new JServerSocketManager ();
-				System.Threading.Interlocked.CompareExchange<JServerSocketManager> (ref _manager, manager, null);
+			get {
+				if (null == _manager) {
+					JServerSocketManager manager = new JServerSocketManager ();
+					System.Threading.Interlocked.CompareExchange<JServerSocketManager> (ref _manager, manager, null);
+				}
+				return _manager;
 			}
-			return _manager;
 		}
 
 		public void Shutdown()
@@ -40,9 +42,14 @@ namespace JGame.Network
 			_forceEnd = true;
 		}
 
+		public bool Initialized
+		{
+			get { return _initialized; }
+		}
+
 		public void Initialize(string serverIP, int serverPort)
 		{
-			if (_initialzed) {
+			if (_initialized) {
 				JLog.Error ("JServerSocketManager initialized aready !");
 				return;
 			}

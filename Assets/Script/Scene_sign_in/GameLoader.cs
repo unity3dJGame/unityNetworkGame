@@ -4,6 +4,9 @@ using UnityEngine;
 using JGame;
 
 public class GameLoader : MonoBehaviour {
+	public bool IsServer = false;
+	public string ServerIP = "127.0.0.1";
+	public int ServerPort = 9796;
 
 	// Use this for initialization
 	void Start () {
@@ -19,6 +22,6 @@ public class GameLoader : MonoBehaviour {
 
 	public void InitializeManagers()
 	{
-		JGame.JGameManager.SingleInstance.initialize ();
+		JGame.JGameManager.SingleInstance.initialize (IsServer, ServerIP, ServerPort);
 	}
 }

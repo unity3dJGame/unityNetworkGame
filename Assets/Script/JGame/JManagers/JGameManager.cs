@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using UnityEngine;
 using System.IO;
 
 namespace JGame
 {
 	using JGame.Log;
+	using JGame.Network;
 
 	public class JGameManager
 	{
@@ -25,7 +25,6 @@ namespace JGame
 			}
 		}
 
-
 		private Dictionary<ushort,  string>  _typeToTypeName
 		{
 			set;
@@ -37,7 +36,7 @@ namespace JGame
 			get;
 		}
 
-		public void initialize()
+		public void initialize(bool bServer, string serverIP, int serverPort)
 		{
 			_typeToTypeName = new Dictionary<ushort, string> ();
 			_toLoadNamespaces = new HashSet<string> ();
@@ -46,12 +45,19 @@ namespace JGame
 			//initialize log system.
 			JLog.Initialize ();
 
+			//initialize server or client network manager
+			if (bServer) {
+				JServerSocketManager.SingleInstance.Initialize (serverIP, serverPort);
+			} else {
+				JClientSocketManager.SingleInstance.Initialize (serverIP, serverPort);
+			}
+
 			//register stream objects.
 			Assembly asmbs =  Assembly.GetExecutingAssembly ();
 			foreach (Type curType in asmbs.GetTypes()) {
 				try
 				{
-					JLog.Info(curType.Namespace);
+					//JLog.Info(curType.Namespace);
 					if (_toLoadNamespaces.Contains (curType.Namespace)) {
 						if (curType.IsClass) {
 							MethodInfo methodinfo = curType.GetMethod("Type");

@@ -12,6 +12,7 @@ namespace JGame.Network
 	public class JClientSocketManager
 	{
 		private static JClientSocketManager	_manager = null;
+		private static bool _initialized = false;
 
 		private JClientSocketManager ()
 		{
@@ -22,17 +23,28 @@ namespace JGame.Network
 			JClientDataSenderThread.ShutDown ();
 		}
 
-		public JClientSocketManager SingleInstance()
+		public bool Initialized
 		{
-			if (null == _manager) {
-				JClientSocketManager manager = new JClientSocketManager ();
-				System.Threading.Interlocked.CompareExchange<JClientSocketManager> (ref _manager, manager, null);
+			get { return _initialized; }
+		}
+
+		public static JClientSocketManager SingleInstance
+		{
+			get {
+				if (null == _manager) {
+					JClientSocketManager manager = new JClientSocketManager ();
+					System.Threading.Interlocked.CompareExchange<JClientSocketManager> (ref _manager, manager, null);
+				}
+				return _manager;
 			}
-			return _manager;
 		}
 
 		public void Initialize(string serverIP, int serverPort)
 		{
+			if (_initialized) {
+				JLog.Error ("JClientSocketManager initialized aready !");
+				return;
+			}
 			JNetworkServerInfo.ServerIP = serverIP;
 			JNetworkServerInfo.ServerPort = serverPort;
 			IPAddress serverAdress = IPAddress.Parse (serverIP);

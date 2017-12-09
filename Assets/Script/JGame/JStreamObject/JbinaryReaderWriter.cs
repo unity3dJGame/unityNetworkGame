@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
 using System.Text;
 
@@ -72,7 +71,7 @@ namespace JGame.StreamObject
 				return (T)obj;
 			}
 
-			Debug.LogError ("JBinaryReaderWriter.Read:not support type" + typeof(T).ToString ());
+			JLog.Error ("JBinaryReaderWriter.Read:not support type" + typeof(T).ToString ());
 			return default(T);
 		}
 
@@ -138,18 +137,18 @@ namespace JGame.StreamObject
 					double value = (double)Convert.ChangeType (inputObj, typeof(double));
 					jstream.Writer.Write (value);
 				} else if (inputObj.GetType ().IsEnum) {
-					Debug.LogError ("JBinaryReaderWriter.Write: not support enum type!");
+					JLog.Error ("JBinaryReaderWriter.Write: not support enum type!");
 				} else {
-					Debug.LogError ("JBinaryReaderWriter.Write: not support this value type:"  + inputObj.GetType().ToString ());
+					JLog.Error ("JBinaryReaderWriter.Write: not support this value type:"  + inputObj.GetType().ToString ());
 				}
 			} else if (inputObj.GetType ().IsClass) {
 				IStreamObj obj = inputObj as IStreamObj;
 				if (null != obj) {
 					obj.Write (ref jstream);
 				} else
-					Debug.LogError ("JBinaryReaderWriter.Write: not support this class type:"  + inputObj.GetType().ToString ());
+					JLog.Error ("JBinaryReaderWriter.Write: not support this class type:"  + inputObj.GetType().ToString ());
 			} else {
-				Debug.LogError ("JBinaryReaderWriter.Write: unknown type:" + inputObj.GetType().ToString ());
+				JLog.Error ("JBinaryReaderWriter.Write: unknown type:" + inputObj.GetType().ToString ());
 			}
 		}
 	}
