@@ -13,8 +13,6 @@ namespace JGame.Network
 	public class JServerSocketManager
 	{
 		private static JServerSocketManager _manager = null;
-		private static Socket 				_serverSocket = null;
-		private static List<Socket>			_connectedClientSockets = null;
 		private static Thread				_serverReceiveThread = null;
 		private static Thread				_serverAcceptThread = null;
 		private static bool					_initialzed = false;
@@ -25,7 +23,7 @@ namespace JGame.Network
 
 		private JServerSocketManager ()
 		{
-			_connectedClientSockets = new List<Socket> ();
+			JConnectedClientSocket.sockets = new List<Socket> ();
 		}
 
 		public JServerSocketManager SingleInstance()
@@ -54,19 +52,19 @@ namespace JGame.Network
 			_socketLocker = new object ();
 			_dataLocker = new object ();
 			_semaphore = new Semaphore (0, 1);
-			JNetworkInteractiveSettings.ReceivedData = new JNetworkDataQueue ();
-			JNetworkInteractiveSettings.SendData = new JNetworkDataQueue ();
+			JNetworkInteractiveData.ReceivedData = new JNetworkDataQueue ();
+			JNetworkInteractiveData.SendData = new JNetworkDataQueue ();
 			IPAddress ip_server = IPAddress.Parse (serverIP); 
 			IPEndPoint server_edp = new IPEndPoint (ip_server, serverPort);
 
-			_serverSocket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			JServerSocket.socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
 			try
 			{
-				_serverSocket.Bind(server_edp);
+				JServerSocket.socket.Bind(server_edp);
 				JLog.Info("JServerSocketManager server socket bind to server endpoint finished");
 
-				_serverSocket.Listen(JTcpDefines.max_tcp_connect);
+				JServerSocket.socket.Listen(JTcpDefines.max_tcp_connect);
 				JLog.Info("JServerSocketManager server socket begin listen");
 
 				_serverReceiveThread = new Thread(ReceiveLoop) { IsBackground = true };
@@ -92,14 +90,14 @@ namespace JGame.Network
 				
 				try
 				{
-					Socket currentConnectedSocket = _serverSocket.Accept();
+					Socket currentConnectedSocket = JServerSocket.socket.Accept();
 					if (null != currentConnectedSocket)
 					{
 						lock (_socketLocker)
 						{
-							if (!_connectedClientSockets.Contains(currentConnectedSocket))
+							if (!JConnectedClientSocket.sockets.Contains(currentConnectedSocket))
 							{
-								_connectedClientSockets.Add(currentConnectedSocket);
+								JConnectedClientSocket.sockets.Add(currentConnectedSocket);
 
 								JLog.Info("client connected :"+currentConnectedSocket.RemoteEndPoint.ToString());
 								_semaphore.Release();
@@ -130,7 +128,7 @@ namespace JGame.Network
 				{
 					lock (_socketLocker)
 					{
-						foreach (Socket socket in _connectedClientSockets) 
+						foreach (Socket socket in JConnectedClientSocket.sockets) 
 						{
 							clientScokets.Add (socket);
 						}						
@@ -189,7 +187,7 @@ namespace JGame.Network
 					lock (_socketLocker) {
 						foreach ( Socket socket in disconnectedSockets)
 						{
-							_connectedClientSockets.Remove (socket);
+							JConnectedClientSocket.sockets.Remove (socket);
 							clientScokets.Remove (socket);
 						}
 					}
@@ -205,7 +203,7 @@ namespace JGame.Network
 			if (null == data)
 				return;
 			
-			JNetworkInteractiveSettings.ReceivedData.Data.Enqueue(data);
+			JNetworkInteractiveData.ReceivedData.Data.Enqueue(data);
 		}		 
 	}
 }

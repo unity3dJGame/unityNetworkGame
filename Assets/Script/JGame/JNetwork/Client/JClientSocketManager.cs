@@ -12,13 +12,14 @@ namespace JGame.Network
 	public class JClientSocketManager
 	{
 		private static JClientSocketManager	_manager = null;
-		private static Socket				_clientSockets = null;
-		private static List<IPEndPoint>		_serverIPEndPoints = null;
-
 
 		private JClientSocketManager ()
 		{
-			_serverIPEndPoints = new List<IPEndPoint> ();
+		}
+
+		public void ShutDown()
+		{
+			JClientDataSenderThread.ShutDown ();
 		}
 
 		public JClientSocketManager SingleInstance()
@@ -36,12 +37,16 @@ namespace JGame.Network
 			JNetworkServerInfo.ServerPort = serverPort;
 			IPAddress serverAdress = IPAddress.Parse (serverIP);
 			IPEndPoint serverEdp = new IPEndPoint (serverAdress, serverPort);
-			_clientSockets = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			JClientSocket.socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			JNetworkInteractiveData.ReceivedData = new JNetworkDataQueue ();
+			JNetworkInteractiveData.SendData = new JNetworkDataQueue ();
 
 			try
 			{
-				_clientSockets.Connect(serverEdp);
+				JClientSocket.socket.Connect(serverEdp);
 				JLog.Info("Connect to server success.");
+
+				JClientDataSenderThread.Initialize();
 			}
 			catch (Exception e) {
 				JLog.Error (e.Message, JGame.Log.JLogCategory.Network);
@@ -51,7 +56,7 @@ namespace JGame.Network
 
 		public void SendData(JNetworkPacketType packetType, byte[] data)
 		{
-			JNetworkHelper.SendData (packetType, data);
+			JNetworkDataOperator.SendData (packetType, data);
 		}
 	}
 }

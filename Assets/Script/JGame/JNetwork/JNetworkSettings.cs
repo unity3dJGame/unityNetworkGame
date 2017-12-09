@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 
 
 namespace JGame.Network.Setting
 {
-	public static class JNetworkInteractiveSettings
+	public static class JNetworkInteractiveData
 	{
 		public static JNetworkDataQueue	ReceivedData {
 			get;
 			set;
 		}
+			
 		public static JNetworkDataQueue SendData {
 			get;
 			set;
@@ -28,5 +31,34 @@ namespace JGame.Network.Setting
 			set;
 		}
 	}
+
+	public static class JClientSocket
+	{
+		public static Socket  socket 
+		{
+			get;
+			set;
+		}
+	}
+
+	public static class JServerSocket
+	{
+		public static Socket socket
+		{
+			get;
+			set;
+		}
+	}
+
+	public static class JConnectedClientSocket
+	{
+		public static List<Socket> sockets
+		{
+			get;
+			set;
+		}
+	}
+
+
 }
 
