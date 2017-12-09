@@ -68,10 +68,10 @@ namespace JGame
 			protected IStreamObj getObjFromServer()
 			{
 				int nReceivedCount = 0;
-				byte[] buffer = new byte[JTcpUtil.max_buffer_size];
+				byte[] buffer = new byte[JTcpDefines.max_buffer_size];
 				int nCount = 0;
 				do {
-					nReceivedCount = JSocket.Client_socket.Receive (buffer, JTcpUtil.max_buffer_size, SocketFlags.None);
+					nReceivedCount = JSocket.Client_socket.Receive (buffer, JTcpDefines.max_buffer_size, SocketFlags.None);
 					nCount++;
 				} while(nReceivedCount == 0 && nCount < 5);
 

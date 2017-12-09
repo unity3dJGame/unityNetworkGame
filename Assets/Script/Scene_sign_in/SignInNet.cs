@@ -96,9 +96,9 @@ public class SignInNet : MonoBehaviour {
 		}
 
 		int nReceivedCount = 0;
-		byte[] buffer = new byte[JTcpUtil.max_buffer_size];
+		byte[] buffer = new byte[JTcpDefines.max_buffer_size];
 		do {
-			nReceivedCount = _client_socket.Receive (buffer, JTcpUtil.max_buffer_size, SocketFlags.None);
+			nReceivedCount = _client_socket.Receive (buffer, JTcpDefines.max_buffer_size, SocketFlags.None);
 		} while(nReceivedCount == 0);
 
 		//...received packet
