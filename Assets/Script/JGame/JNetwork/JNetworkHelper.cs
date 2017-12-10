@@ -7,6 +7,7 @@ using System.Threading;
 namespace JGame
 {
 	using JGame.StreamObject;
+	using JGame.Data;
 
 	namespace Network
 	{
@@ -19,7 +20,7 @@ namespace JGame
 			private static object _receiveLocker = new object ();
 			private static Semaphore _receivedSemaphore = new Semaphore (0, 1);
 
-			public static void SendData (JNetworkPacketType packetType, byte [] data)
+			internal static void SendData (byte [] data)
 			{
 				JNetworkData newData = new JNetworkData();
 				newData.Data = data;
@@ -28,6 +29,23 @@ namespace JGame
 					JNetworkInteractiveData.SendData.Data.Enqueue (newData);
 					_sendSemaphore.Release ();
 				}
+			}
+			public static void SendData(JPacketType packetType,  List<IStreamObj> objects)
+			{
+				JOutputStream jstream = new JOutputStream ();
+				jstream.Writer.Write ((ushort)packetType);
+				foreach(var obj in objects)
+					JBinaryReaderWriter.Write (ref jstream, obj);
+
+				SendData (jstream.ToArray ());
+			}
+			public static void SendData(JPacketType packetType,  IStreamObj streamObject)
+			{
+				JOutputStream jstream = new JOutputStream ();
+				jstream.Writer.Write ((ushort)packetType);
+				JBinaryReaderWriter.Write (ref jstream, streamObject);
+
+				SendData (jstream.ToArray ());
 			}
 
 			public static List<JNetworkData> TakeSendData()
@@ -47,8 +65,8 @@ namespace JGame
 
 				return listData;
 			}
-
-			public static void ReceivedData(int len, byte[] data, EndPoint remoteEndPoint)
+				
+			public static void ReceiveData(int len, byte[] data, EndPoint remoteEndPoint)
 			{
 				JNetworkData networkData = new JNetworkData();
 				networkData.Len = len;
@@ -69,8 +87,11 @@ namespace JGame
 			}
 			public static List<JNetworkData> TakeReceivedData()
 			{
-				_receivedSemaphore.WaitOne ();
 				List<JNetworkData> listData = new List<JNetworkData> ();
+
+				if (!_receivedSemaphore.WaitOne (1)) {
+					return listData;
+				}
 
 				try{
 					lock (_receiveLocker) {
@@ -88,26 +109,26 @@ namespace JGame
 
 		public static class JNetworkHelper
 		{
-			public static JNetworkPacketType GetNetworkPacketType(JNetworkData data)
+			public static JPacketType GetNetworkPacketType(JNetworkData data)
 			{
 				if (null == data)
-					return JNetworkPacketType.npt_unknown;
+					return JPacketType.npt_unknown;
 
 				try
 				{
 					JInputStream inputStream = new JInputStream (data.Data);
-					return (JNetworkPacketType)inputStream.Reader.ReadInt16 ();				
+					return (JPacketType)inputStream.Reader.ReadInt16 ();		
 				}
 				catch (Exception e) {
-					JLog.Error ("JNetworkHelper.JNetworkPacketType error message :" + e.Message);
+					JLog.Error ("JNetworkHelper.JPacketType error message :" + e.Message);
 				}
 
-				return JNetworkPacketType.npt_unknown;
+				return JPacketType.npt_unknown;
 			}
 
-			public static bool IsValidPacketType(JNetworkPacketType type)
+			public static bool IsValidPacketType(JPacketType type)
 			{
-				if (type > JNetworkPacketType.npt_min && type < JNetworkPacketType.npt_max) {
+				if (type > JPacketType.npt_min && type < JPacketType.npt_max) {
 					return true;
 				} else {
 					return false;

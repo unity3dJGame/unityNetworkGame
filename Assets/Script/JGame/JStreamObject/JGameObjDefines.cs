@@ -16,8 +16,10 @@ namespace JGame.StreamObject
 		[Description("start of object types")]
 		hot_start = 1,
 
-		[Description("sign in")]
+		[Description("sign in require")]
 		sign_in,	//登录包
+		[Description("sign in return")]
+		sign_in_ret,	//登录包
 
 		[Description("end of object types")]
 		hot_end

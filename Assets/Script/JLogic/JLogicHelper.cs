@@ -5,15 +5,20 @@ namespace JGame
 {
 	using JGame.Network;
 	using JGame.Processer;
+	using JGame.Data;
 
 	namespace Logic
 	{
 		public static class JLogicHelper
 		{
+			public static bool IsServer = false;
 			private static ReaderWriterLockSlim _readerWriteLocker = new ReaderWriterLockSlim();
 
-			public static bool registerProcessor(JNetworkPacketType packetType, IProcesser processor)
+			public static bool registerProcessor(JPacketType packetType, IProcesser processor, bool isServerProcessor = false)
 			{
+				if (IsServer && !isServerProcessor || !IsServer && isServerProcessor)
+					return true;
+				
 				bool bSuccess = false;
 				try
 				{
@@ -37,7 +42,7 @@ namespace JGame
 				return bSuccess;
 			}
 
-			public static IProcesser getProcessor(JNetworkPacketType packetType)
+			public static IProcesser getProcessor(JPacketType packetType)
 			{
 				IProcesser processor = null;
 				try

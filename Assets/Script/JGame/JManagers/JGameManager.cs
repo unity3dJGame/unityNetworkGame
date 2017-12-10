@@ -7,6 +7,7 @@ using System.IO;
 namespace JGame
 {
 	using JGame.Log;
+	using JGame.Logic;
 	using JGame.Network;
 
 	public class JGameManager
@@ -41,6 +42,7 @@ namespace JGame
 			_typeToTypeName = new Dictionary<ushort, string> ();
 			_toLoadNamespaces = new HashSet<string> ();
 			_toLoadNamespaces.Add ("JGame.StreamObject");
+			JLogicHelper.IsServer = bServer;
 
 			//initialize log system.
 			JLog.Initialize ();

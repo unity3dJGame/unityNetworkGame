@@ -13,18 +13,6 @@ namespace JGame
 
 		public interface IProcesser 
 		{
-			/*/// <summary>
-			/// Set the specified obj.
-			/// </summary>
-			/// <param name="obj">Object.</param>
-			bool set(IStreamObj obj);
-
-			/// <summary>
-			/// Get the specified obj.
-			/// </summary>
-			/// <param name="obj">Object.</param>
-			bool get(ref IStreamObj obj);*/
-
 			void run (IDataSet dataSet);
 		}
 	}

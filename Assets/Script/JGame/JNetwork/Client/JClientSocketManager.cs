@@ -9,6 +9,7 @@ namespace JGame.Network
 {
 	using JGame.StreamObject;
 	using JGame.Network.Setting;
+	using JGame.Data;
 	public class JClientSocketManager
 	{
 		private static JClientSocketManager	_manager = null;
@@ -67,9 +68,9 @@ namespace JGame.Network
 			}
 		}
 
-		public void SendData(JNetworkPacketType packetType, byte[] data)
+		public void SendData(byte[] data)
 		{
-			JNetworkDataOperator.SendData (packetType, data);
+			JNetworkDataOperator.SendData ( data);
 		}
 	}
 }

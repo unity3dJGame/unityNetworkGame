@@ -41,7 +41,7 @@ namespace JGame.Network
 				byte[] buffer = new byte[JTcpDefines.max_buffer_size];
 				int recLen = JClientSocket.socket.Receive (buffer);
 				if (recLen > 0) {
-					JNetworkDataOperator.ReceivedData (recLen, buffer, JClientSocket.socket.RemoteEndPoint);
+					JNetworkDataOperator.ReceiveData (recLen, buffer, JClientSocket.socket.RemoteEndPoint);
 				} else {
 					//说明socket已经断开连接
 				}

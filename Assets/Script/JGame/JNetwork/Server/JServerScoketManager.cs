@@ -165,7 +165,7 @@ namespace JGame.Network
 						int recLen = socket.Receive (recBuffer);
 						if (recLen > 0) {
 							//save the received data
-							JNetworkDataOperator.ReceivedData(recLen, recBuffer, socket.RemoteEndPoint);
+							JNetworkDataOperator.ReceiveData(recLen, recBuffer, socket.RemoteEndPoint);
 
 							//add the selected socket to select sockets list
 							clientScokets.Add(socket);
