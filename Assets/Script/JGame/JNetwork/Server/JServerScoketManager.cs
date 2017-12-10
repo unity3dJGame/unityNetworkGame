@@ -18,7 +18,6 @@ namespace JGame.Network
 		private static bool					_initialized = false;
 		private static Semaphore			_semaphore = null;
 		private static object				_socketLocker = null;
-		private static object				_dataLocker = null;
 		private static bool					_forceEnd = false; 
 
 		private JServerSocketManager ()
@@ -57,7 +56,6 @@ namespace JGame.Network
 			JLog.Info ("JServerSocketManager begin to initialize :", JGame.Log.JLogCategory.Network);
 
 			_socketLocker = new object ();
-			_dataLocker = new object ();
 			_semaphore = new Semaphore (0, 1);
 			JNetworkInteractiveData.ReceivedData = new JNetworkDataQueue ();
 			JNetworkInteractiveData.SendData = new JNetworkDataQueue ();
@@ -167,15 +165,7 @@ namespace JGame.Network
 						int recLen = socket.Receive (recBuffer);
 						if (recLen > 0) {
 							//save the received data
-							JNetwrokData data = new JNetwrokData();
-							//data.Len = recLen;
-							data.Data = recBuffer;
-							//data.LocalEndPoint = socket.LocalEndPoint;
-							data.RemoteEndPoint = socket.RemoteEndPoint;
-							lock (_dataLocker)
-							{
-								ReceiveData(data);
-							}
+							JNetworkDataOperator.ReceivedData(recLen, recBuffer, socket.RemoteEndPoint);
 
 							//add the selected socket to select sockets list
 							clientScokets.Add(socket);
@@ -210,14 +200,6 @@ namespace JGame.Network
 
 			JLog.Info ("JServerSocketManager server receive loop end.", JGame.Log.JLogCategory.Network);
 		}
-
-		private void ReceiveData(JNetwrokData data)
-		{
-			if (null == data)
-				return;
-			
-			JNetworkInteractiveData.ReceivedData.Data.Enqueue(data);
-		}		 
 	}
 }
 

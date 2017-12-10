@@ -10,7 +10,9 @@ namespace JGame.Network
 	public class JNetworkDataOperator
 	{
 		private static object _sendLocker = new object();
-		public static Semaphore _sendSemaphore = new Semaphore(0,1);
+		private static Semaphore _sendSemaphore = new Semaphore(0,1);
+		private static object _receiveLocker = new object ();
+		private static Semaphore _receivedSemaphore = new Semaphore (0, 1);
 
 		public static void SendData (JNetworkPacketType packetType, byte [] data)
 		{
@@ -35,16 +37,48 @@ namespace JGame.Network
 				}
 			}
 			catch (Exception e) {
-				JLog.Error ("TakeSendData:" + e.Message);
+				JLog.Error ("TakeSendData:" + e.Message, JGame.Log.JLogCategory.Network);
 			}
 
 			return listData;
 		}
 
-		/*public JNetwrokData ReceiveData(JNetworkPacketType type)
+		public static void ReceivedData(int len, byte[] data, EndPoint remoteEndPoint)
 		{
-			
-		}*/
+			JNetwrokData networkData = new JNetwrokData();
+			networkData.Len = len;
+			networkData.Data = data;
+			networkData.RemoteEndPoint = remoteEndPoint;
+
+			try
+			{
+				lock (_receiveLocker)
+				{
+					JNetworkInteractiveData.ReceivedData.Data.Enqueue(networkData);
+					_receivedSemaphore.Release();
+				}
+			}
+			catch (Exception e) {
+				JLog.Error ("ReceiveData:" + e.Message, JGame.Log.JLogCategory.Network);
+			}
+		}
+		public List<JNetwrokData> TakeReceivedData(JNetworkPacketType type)
+		{
+			_receivedSemaphore.WaitOne ();
+			List<JNetwrokData> listData = new List<JNetwrokData> ();
+
+			try{
+				lock (_receiveLocker) {
+					while (JNetworkInteractiveData.ReceivedData.Data.Count > 0)
+						listData.Add (JNetworkInteractiveData.ReceivedData.Data.Dequeue ());
+				}
+			}
+			catch (Exception e) {
+				JLog.Error ("TakeSendData:" + e.Message, JGame.Log.JLogCategory.Network);
+			}
+
+			return listData;	
+		}
 	}
 }
 
