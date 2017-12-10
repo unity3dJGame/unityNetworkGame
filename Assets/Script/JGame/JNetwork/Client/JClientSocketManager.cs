@@ -59,6 +59,7 @@ namespace JGame.Network
 				JLog.Info("Connect to server success.", JGame.Log.JLogCategory.Network);
 
 				JClientDataSenderThread.Initialize();
+				JClientDataReceiverThread.Initialize();
 			}
 			catch (Exception e) {
 				JLog.Error (e.Message, JGame.Log.JLogCategory.Network);

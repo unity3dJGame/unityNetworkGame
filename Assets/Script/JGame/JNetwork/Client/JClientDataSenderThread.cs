@@ -8,18 +8,17 @@ namespace JGame.Network
 
 	public static class JClientDataSenderThread
 	{
-		private static object _dataLocker;
-		private static bool _forceEnd = false;
-		private static Thread _thread;
+		private static bool _requireEnd = false;
 
 		public static void ShutDown()
 		{
-			_forceEnd = true;
+			_requireEnd = true;
 		}
 		public static void Initialize()
 		{
-			_thread = new Thread (MainLoop);
-			_thread.Start ();
+			_requireEnd = false;
+			Thread thread = new Thread (MainLoop);
+			thread.Start ();
 		}
 
 		public static void MainLoop()
@@ -38,7 +37,7 @@ namespace JGame.Network
 			JLog.Info("JNetworkDataSenderThread: main loop started", JGame.Log.JLogCategory.Network);
 
 			while (true) {
-				if (_forceEnd)
+				if (_requireEnd)
 					break;
 
 				try
