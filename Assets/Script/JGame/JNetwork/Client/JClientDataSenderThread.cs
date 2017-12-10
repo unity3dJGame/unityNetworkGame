@@ -47,7 +47,7 @@ namespace JGame.Network
 					foreach (JNetwrokData data in dataList)
 					{
 						JClientSocket.socket.Send(data.Data);
-						JLog.Debug("JNetworkDataSenderThread: send one network packet");
+						JLog.Debug("JNetworkDataSenderThread: send one network packet", JGame.Log.JLogCategory.Network);
 					}
 				}
 				catch (Exception e) {

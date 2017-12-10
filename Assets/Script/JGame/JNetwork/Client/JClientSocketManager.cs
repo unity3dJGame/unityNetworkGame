@@ -42,7 +42,7 @@ namespace JGame.Network
 		public void Initialize(string serverIP, int serverPort)
 		{
 			if (_initialized) {
-				JLog.Error ("JClientSocketManager initialized aready !");
+				JLog.Error ("JClientSocketManager initialized aready !", JGame.Log.JLogCategory.Network);
 				return;
 			}
 			JNetworkServerInfo.ServerIP = serverIP;
@@ -56,7 +56,7 @@ namespace JGame.Network
 			try
 			{
 				JClientSocket.socket.Connect(serverEdp);
-				JLog.Info("Connect to server success.");
+				JLog.Info("Connect to server success.", JGame.Log.JLogCategory.Network);
 
 				JClientDataSenderThread.Initialize();
 			}

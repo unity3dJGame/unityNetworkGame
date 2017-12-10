@@ -50,11 +50,11 @@ namespace JGame.Network
 		public void Initialize(string serverIP, int serverPort)
 		{
 			if (_initialized) {
-				JLog.Error ("JServerSocketManager initialized aready !");
+				JLog.Error ("JServerSocketManager initialized aready !", JGame.Log.JLogCategory.Network);
 				return;
 			}
 
-			JLog.Info ("JServerSocketManager begin to initialize :");
+			JLog.Info ("JServerSocketManager begin to initialize :", JGame.Log.JLogCategory.Network);
 
 			_socketLocker = new object ();
 			_dataLocker = new object ();
@@ -69,10 +69,10 @@ namespace JGame.Network
 			try
 			{
 				JServerSocket.socket.Bind(server_edp);
-				JLog.Info("JServerSocketManager server socket bind to server endpoint finished");
+				JLog.Info("JServerSocketManager server socket bind to server endpoint finished", JGame.Log.JLogCategory.Network);
 
 				JServerSocket.socket.Listen(JTcpDefines.max_tcp_connect);
-				JLog.Info("JServerSocketManager server socket begin listen");
+				JLog.Info("JServerSocketManager server socket begin listen", JGame.Log.JLogCategory.Network);
 
 				_serverReceiveThread = new Thread(ReceiveLoop) { IsBackground = true };
 				_serverReceiveThread.Start();
@@ -81,7 +81,7 @@ namespace JGame.Network
 				_serverAcceptThread.Start();
 			}
 			catch (Exception e) {
-				JLog.Error ("JServerSocketManager initialize faield  error message: " + e.Message);
+				JLog.Error ("JServerSocketManager initialize faield  error message: " + e.Message, JGame.Log.JLogCategory.Network);
 				return;
 			}
 		}
@@ -92,11 +92,14 @@ namespace JGame.Network
 
 			while (true)
 			{
-				if (_forceEnd)
+ 				if (_forceEnd)
 					break;
 				
 				try
 				{
+					if (JServerSocket.socket.Available <= 0)
+						continue;
+					
 					Socket currentConnectedSocket = JServerSocket.socket.Accept();
 					if (null != currentConnectedSocket)
 					{
@@ -106,7 +109,7 @@ namespace JGame.Network
 							{
 								JConnectedClientSocket.sockets.Add(currentConnectedSocket);
 
-								JLog.Info("client connected :"+currentConnectedSocket.RemoteEndPoint.ToString());
+								JLog.Info("client connected :"+currentConnectedSocket.RemoteEndPoint.ToString(), JGame.Log.JLogCategory.Network);
 								_semaphore.Release();
 							}
 						}
@@ -154,6 +157,9 @@ namespace JGame.Network
 				List<Socket> disconnectedSockets = new List<Socket>();
 				foreach (Socket socket in clientScokets) 
 				{
+					if (socket.Available <= 0)
+						continue;
+					
 					//receive form client socket
 					try
 					{
@@ -181,7 +187,7 @@ namespace JGame.Network
 							//record disconnected socket from list
 							disconnectedSockets.Add(socket);
 	
-							JLog.Info("client socket disconnected : " + socket.RemoteEndPoint.ToString());
+							JLog.Info("client socket disconnected : " + socket.RemoteEndPoint.ToString(), JGame.Log.JLogCategory.Network);
 						}
 					}
 					catch (Exception e) {
