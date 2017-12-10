@@ -42,8 +42,8 @@ namespace JGame.Network
 
 				try
 				{
-					List<JNetwrokData> dataList = JNetworkDataOperator.TakeSendData();
-					foreach (JNetwrokData data in dataList)
+					List<JNetworkData> dataList = JNetworkDataOperator.TakeSendData();
+					foreach (JNetworkData data in dataList)
 					{
 						JClientSocket.socket.Send(data.Data);
 						JLog.Debug("JNetworkDataSenderThread: send one network packet", JGame.Log.JLogCategory.Network);

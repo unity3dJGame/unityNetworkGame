@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.ComponentModel;
 
 namespace JGame.Network
 {
@@ -16,15 +17,21 @@ namespace JGame.Network
 
 	public enum JNetworkPacketType
 	{
-		npt_min = 0,
+		[Description("未知")]
+		npt_unknown = 0,
+		[Description("Packet type min define")]
+		npt_min = 1,
 
-		npt_signin_hit,
+		[Description("登录请求包")]
+		npt_signin_req,
+		[Description("登录返回包")]
 		npt_signin_ret,
 
+		[Description("Packet type max define")]
 		npt_max
 	};
 
-	public class JNetwrokData
+	public class JNetworkData
 	{
 		public int 			Len;
 		public byte[] 		Data;
@@ -34,9 +41,9 @@ namespace JGame.Network
 
 	public class JNetworkDataQueue
 	{
-		public Queue<JNetwrokData> _dataQueue = new Queue<JNetwrokData>();
+		public Queue<JNetworkData> _dataQueue = new Queue<JNetworkData>();
 
-		public Queue<JNetwrokData> Data {
+		public Queue<JNetworkData> Data {
 			get { return _dataQueue; }
 		}
 
