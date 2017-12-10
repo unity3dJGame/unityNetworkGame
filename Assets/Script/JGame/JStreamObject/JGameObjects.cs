@@ -33,4 +33,26 @@ namespace JGame.StreamObject
 			stream.Flush ();
 		}
 	}
+
+	public class JObj_SignRet: IStreamObj
+	{
+		public bool Result = false;
+
+		public ushort Type ()
+		{
+			return (ushort)JObjectType.sign_in_ret;
+		}
+		public void Read (ref JInputStream stream)
+		{
+			Result = JBinaryReaderWriter.Read<bool> (stream);
+		}
+		public void Write (ref JOutputStream stream)
+		{ 
+			if (null == stream)
+				stream = new JOutputStream ();
+			JBinaryReaderWriter.Write(ref stream, Type());
+			JBinaryReaderWriter.Write (ref stream, Result);
+			stream.Flush ();
+		}
+	}
 }

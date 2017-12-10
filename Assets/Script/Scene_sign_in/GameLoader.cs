@@ -5,13 +5,14 @@ using JGame;
 
 public class GameLoader : MonoBehaviour {
 	public bool IsServer = false;
-	public string ServerIP = "127.0.0.1";
+	public string ServerIP = "192.168.1.101";
 	public int ServerPort = 9796;
 
 	// Use this for initialization
 	void Start () {
 		
 		InitializeManagers ();
+
 
 	}
 	

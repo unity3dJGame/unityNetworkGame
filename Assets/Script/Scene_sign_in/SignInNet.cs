@@ -12,6 +12,8 @@ using JGame.StreamObject;
 using JGame.Network;
 using JGame.Data;
 using JGame.Processer;
+using JGame.LocalData;
+using JGame.Logic;
 
 public class SignInNet : MonoBehaviour {
 	public Text _user_account;		//用户账号
@@ -29,51 +31,26 @@ public class SignInNet : MonoBehaviour {
 
 
 	}
+	void Update(){
+		JLogic.Logic ();
+	}
 
 	//登录检查
 	public void CheckToSignIn ()
 	{
-		JObj_SignIn obj2 = new JObj_SignIn();
-		obj2._strAccount = _user_account.text;
-		obj2._strCode = _user_code.text;
-
-		UserData data = new UserData ();
-		data.setData (obj2);
-
-		JProcesserSignInSet proSet = new JProcesserSignInSet ();
-		proSet.run (data);
-		JProcesserSignInGet proGet = new JProcesserSignInGet ();
-		proGet.run (data);
-
-		return;
-
-		IPAddress ip_server = IPAddress.Parse (_server_ip); 
-		IPEndPoint server_edp = new IPEndPoint (ip_server, _server_port);
-		_client_socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		//_client_socket.Bind (ip_edp);
-
-		//尝试连接服务器
-		try
-		{
-			_client_socket.Connect(server_edp);
-			_connected = true;
-			Debug.Log("连接服务器成功");
-		}
-		catch (Exception e) {
-			Debug.Log("连接服务器失败");
-			Debug.LogError (e.Message);
-			return;
-		}
-
-		//将消息发送至
 		JObj_SignIn obj = new JObj_SignIn();
 		obj._strAccount = _user_account.text;
 		obj._strCode = _user_code.text;
-		if (!SendToServer (obj))
-			return;
+	
+		JLocalDataHelper.addData (JPacketType.npt_signin_req, obj);
+	}
 
-		//获取服务器返回的消息
-		//obj.
+	//注册
+	public void Test_registerUser()
+	{
+		JObj_SignRet obj = new JObj_SignRet();
+		obj.Result = true;
+		JLocalDataHelper.addData (JPacketType.npt_signin_ret, obj);
 
 	}
 
@@ -123,8 +100,8 @@ public class SignInNet : MonoBehaviour {
 
 		Debug.Log ("Welcome!");
 	}
-
-	private IEnumerator SwitchScene (string strSceneName)
+		
+	public  IEnumerator SwitchScene (string strSceneName)
 	{
 		AsyncOperation aop = SceneManager.LoadSceneAsync (strSceneName);
 		//aop.allowSceneActivation = false;
