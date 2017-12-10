@@ -67,7 +67,8 @@ namespace JGame.Network
 			try
 			{
 				JServerSocket.socket.Bind(server_edp);
-				JLog.Info("JServerSocketManager server socket bind to server endpoint finished", JGame.Log.JLogCategory.Network);
+				JLog.Info("JServerSocketManager server socket bind to server endpoint finished.\nIP:"+serverIP+"\nPort:"+serverPort.ToString(),
+					JGame.Log.JLogCategory.Network);
 
 				JServerSocket.socket.Listen(JTcpDefines.max_tcp_connect);
 				JLog.Info("JServerSocketManager server socket begin listen", JGame.Log.JLogCategory.Network);
@@ -90,14 +91,13 @@ namespace JGame.Network
 
 			while (true)
 			{
+				//JLog.Debug("AcceptLoop loop one begin ...", JGame.Log.JLogCategory.Network);
+
  				if (_forceEnd)
 					break;
 				
 				try
-				{
-					if (JServerSocket.socket.Available <= 0)
-						continue;
-					
+				{					
 					Socket currentConnectedSocket = JServerSocket.socket.Accept();
 					if (null != currentConnectedSocket)
 					{
@@ -117,6 +117,8 @@ namespace JGame.Network
 				{
 					JLog.Error ("JServerSocketManager accept loop error message:" + e.Message, JGame.Log.JLogCategory.Network);
 				}
+
+				//JLog.Debug("AcceptLoop loop one end ...", JGame.Log.JLogCategory.Network);
 			}
 
 			JLog.Info("JServerSocketManager server accept loop end.", JGame.Log.JLogCategory.Network);

@@ -75,6 +75,8 @@ namespace JGame
 					JLog.Error (e.Message);
 				}
 			}
+
+			JLog.Debug ("JGameManager initialize finished .");
 		}
 
 		public void RegisterStreamObj(ushort objType, string typeName)
