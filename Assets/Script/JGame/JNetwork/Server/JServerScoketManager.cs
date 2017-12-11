@@ -81,14 +81,14 @@ namespace JGame.Network
 				JServerSocket.socket.Listen(JTcpDefines.max_tcp_connect);
 				JLog.Info("JServerSocketManager server socket begin listen", JGame.Log.JLogCategory.Network);
 
+				_serverSendThread = new Thread(SendLoop) { IsBackground = true };
+				_serverSendThread.Start();
+
 				_serverReceiveThread = new Thread(ReceiveLoop) { IsBackground = true };
 				_serverReceiveThread.Start();
 
 				_serverAcceptThread = new Thread(AcceptLoop) { IsBackground = true };
 				_serverAcceptThread.Start();
-
-				_serverSendThread = new Thread(SendLoop) { IsBackground = true };
-				_serverSendThread.Start();
 			}
 			catch (Exception e) {
 				JLog.Error ("JServerSocketManager initialize faield  error message: " + e.Message, JGame.Log.JLogCategory.Network);
@@ -147,12 +147,14 @@ namespace JGame.Network
 				
 				if (_semaphore.WaitOne(1))
 				{
+					JLog.Info ("JServerSocketManager ReceiveLoop _semaphore.WaitOne(1) success", JGame.Log.JLogCategory.Network);
 					lock (_socketLocker)
 					{
 						foreach (Socket socket in JConnectedClientSocket.sockets) 
 						{
 							clientScokets.Add (socket);
-						}						
+						}	
+						JLog.Info ("JServerSocketManager ReceiveLoop add socket to clientsockets: count - "+clientScokets.Count.ToString(), JGame.Log.JLogCategory.Network);
 					}
 
 					JLog.Debug ("connected client sockets : " + clientScokets.Count.ToString (), JGame.Log.JLogCategory.Network);
@@ -161,15 +163,21 @@ namespace JGame.Network
 				if (clientScokets.Count == 0 ) {
 					_semaphore.WaitOne ();
 					_semaphore.Release();
+
+					JLog.Debug ("JServerSocketManager ReceiveLoop._semaphore.WaitOne success. " , JGame.Log.JLogCategory.Network);				
+
 					continue;
 				} 
 					
 				Socket.Select (clientScokets, null, null, 500);
+				if (clientScokets.Count > 0)
+					JLog.Debug ("JServerSocketManager ReceiveLoop.Socket.Select selected clientsockets: count - " + clientScokets.Count.ToString (), JGame.Log.JLogCategory.Network);				
+
 				List<Socket> disconnectedSockets = new List<Socket>();
 				foreach (Socket socket in clientScokets) 
 				{
-					if (socket.Available <= 0)
-						continue;
+					/*if (socket.Available <= 0)
+						continue;*/
 					
 					//receive form client socket
 					try
@@ -182,7 +190,7 @@ namespace JGame.Network
 							JNetworkDataOperator.ReceiveData(recLen, recBuffer, socket.RemoteEndPoint);
 
 							//add the selected socket to select sockets list
-							clientScokets.Add(socket);
+							//clientScokets.Add(socket);
 						}
 						else 
 						{
@@ -207,6 +215,14 @@ namespace JGame.Network
 							JConnectedClientSocket.sockets.Remove (socket);
 							clientScokets.Remove (socket);
 						}
+					}
+				}
+
+				//add old sockets to client sockets
+				lock (_socketLocker) {
+					foreach ( Socket socket in JConnectedClientSocket.sockets)
+					{
+						clientScokets.Add (socket);
 					}
 				}
 
