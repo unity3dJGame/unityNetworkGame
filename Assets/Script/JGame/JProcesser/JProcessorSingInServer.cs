@@ -10,7 +10,7 @@ namespace JGame
 		
 		public class JProcesserSignInServer :  IProcesser
 		{
-			public override void run(IDataSet dataSet)
+			public void run(IDataSet dataSet)
 			{
 				IStreamObj obj = dataSet.getData (JObjectType.sign_in);
 				JObj_SignIn signInObj = obj as JObj_SignIn;
@@ -19,18 +19,25 @@ namespace JGame
 
 				string account = signInObj._strAccount;
 				string code = signInObj._strCode;
+
+				JObj_SignRet resultObj = new JObj_SignRet ();
 				//ToDo:if account and code is in database then
-				if (true) {
-					JObj_SignRet resultObj = new JObj_SignRet();
+				if (account == "test" && code == "123") 
+				{
 					resultObj.Result = true;
-					try {
-						JNetworkDataOperator.SendData(JPacketType.npt_signin_ret, resultObj);
-						return true;
-					} catch (Exception e) {
-						JLog.Debug ("发送数据失败");
-						JLog.Error (e.Message);
-						return false;
-					}
+				}
+				else
+				{
+					resultObj.Result = false;
+				}
+
+				try {
+					JNetworkDataOperator.SendData (JPacketType.npt_signin_ret, resultObj);
+					return;
+				} catch (Exception e) {
+					JLog.Debug ("发送数据失败");
+					JLog.Error (e.Message);
+					return;
 				}
 			}
 		}
