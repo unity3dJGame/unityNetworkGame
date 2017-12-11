@@ -7,11 +7,11 @@ namespace JGame
 
 	namespace Processer
 	{
-		public static class ProcessorRegister
+		public static class JProcessorRegister
 		{
 			public static void RegisterServerProcessor()
 			{
-
+				JLogicHelper.registerProcessor (JPacketType.npt_signin_req, new JProcesserSignInServer (), false);
 			}
 
 			public static void RegisterClientProcessor()

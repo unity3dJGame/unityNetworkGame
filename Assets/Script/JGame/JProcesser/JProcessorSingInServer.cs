@@ -19,6 +19,7 @@ namespace JGame
 
 				string account = signInObj._strAccount;
 				string code = signInObj._strCode;
+				JLog.Info("receive npt_signin_req packet from client: account:"+account+"  code:"+code, JGame.Log.JLogCategory.Network);
 
 				JObj_SignRet resultObj = new JObj_SignRet ();
 				//ToDo:if account and code is in database then
@@ -33,6 +34,7 @@ namespace JGame
 
 				try {
 					JNetworkDataOperator.SendData (JPacketType.npt_signin_ret, resultObj);
+					JLog.Info("send npt_signin_ret packet to client", JGame.Log.JLogCategory.Network);
 					return;
 				} catch (Exception e) {
 					JLog.Debug ("发送数据失败");

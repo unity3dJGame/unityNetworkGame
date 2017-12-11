@@ -15,6 +15,7 @@ namespace JGame.Network
 		private static JServerSocketManager _manager = null;
 		private static Thread				_serverReceiveThread = null;
 		private static Thread				_serverAcceptThread = null;
+		private static Thread 				_serverSendThread = null;
 		private static bool					_initialized = false;
 		private static Semaphore			_semaphore = null;
 		private static object				_socketLocker = null;
@@ -85,6 +86,9 @@ namespace JGame.Network
 
 				_serverAcceptThread = new Thread(AcceptLoop) { IsBackground = true };
 				_serverAcceptThread.Start();
+
+				_serverSendThread = new Thread(SendLoop) { IsBackground = true };
+				_serverSendThread.Start();
 			}
 			catch (Exception e) {
 				JLog.Error ("JServerSocketManager initialize faield  error message: " + e.Message, JGame.Log.JLogCategory.Network);
@@ -134,8 +138,8 @@ namespace JGame.Network
 		private void ReceiveLoop()
 		{
 			JLog.Info ("JServerSocketManager server receive loop started", JGame.Log.JLogCategory.Network);
+			List<Socket> clientScokets = new List<Socket> ();
 
-			List<Socket> clientScokets = new List<Socket>();
 			while (true)
 			{
 				if (_forceEnd)
@@ -209,6 +213,38 @@ namespace JGame.Network
 			}
 
 			JLog.Info ("JServerSocketManager server receive loop end.", JGame.Log.JLogCategory.Network);
+		}
+
+		private void SendLoop()
+		{
+			JLog.Info("JServerSocketManager server send loop started", JGame.Log.JLogCategory.Network);
+
+			while (true) {
+				if (_forceEnd)
+					break;
+				List<JNetworkData> dataList = JNetworkDataOperator.TakeSendData (1000);
+				if (null == dataList) {
+					continue;
+				}
+
+				foreach (JNetworkData data in dataList) {
+					lock (_socketLocker) {
+						foreach ( Socket socket in JConnectedClientSocket.sockets)
+						{
+							try
+							{
+								socket.Send (data.Data);
+							}
+							catch(Exception e) {
+								JLog.Error ("SendLoop error message:" + e.Message, JGame.Log.JLogCategory.Network);
+							}
+						}
+					}
+				}
+			}
+
+			JLog.Info("JServerSocketManager server send loop end", JGame.Log.JLogCategory.Network);
+
 		}
 	}
 }

@@ -9,6 +9,7 @@ namespace JGame
 	using JGame.Log;
 	using JGame.Logic;
 	using JGame.Network;
+	using JGame.Processer;
 
 	public class JGameManager
 	{
@@ -66,6 +67,7 @@ namespace JGame
 			//initialize server or client network manager
 			if (bServer) {
 				JServerSocketManager.SingleInstance.Initialize (serverIP, serverPort);
+				JProcessorRegister.RegisterServerProcessor ();
 			} else {
 				JClientSocketManager.SingleInstance.Initialize (serverIP, serverPort);
 			}
