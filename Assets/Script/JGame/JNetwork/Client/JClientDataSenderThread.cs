@@ -42,7 +42,10 @@ namespace JGame.Network
 
 				try
 				{
-					List<JNetworkData> dataList = JNetworkDataOperator.TakeSendData();
+					List<JNetworkData> dataList = JNetworkDataOperator.TakeSendData(1000);
+					if (null == dataList)
+						continue;
+					
 					foreach (JNetworkData data in dataList)
 					{
 						JClientSocket.socket.Send(data.Data);

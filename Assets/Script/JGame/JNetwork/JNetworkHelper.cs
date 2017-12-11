@@ -48,9 +48,20 @@ namespace JGame
 				SendData (jstream.ToArray ());
 			}
 
-			public static List<JNetworkData> TakeSendData()
+			/// <summary>
+			/// Takes the send data.
+			/// </summary>
+			/// <returns>The send data. wait failed will return null</returns>
+			/// <param name="millisecondsTimeout">Milliseconds timeout. <0 wait always</param>
+			public static List<JNetworkData> TakeSendData(int millisecondsTimeout)
 			{
-				_sendSemaphore.WaitOne ();
+				if (millisecondsTimeout < -1)
+					_sendSemaphore.WaitOne ();
+				else {
+					if (!_sendSemaphore.WaitOne (millisecondsTimeout))
+						return null;
+				}
+				
 				List<JNetworkData> listData = new List<JNetworkData> ();
 
 				try{

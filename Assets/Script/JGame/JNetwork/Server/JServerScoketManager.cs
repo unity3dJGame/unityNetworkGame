@@ -36,9 +36,16 @@ namespace JGame.Network
 			}
 		}
 
-		public void Shutdown()
+		public void ShutDown()
 		{
 			_forceEnd = true;
+			try
+			{
+				JServerSocket.socket.Close ();
+			}
+			catch (Exception e) {
+				JLog.Error (e.Message, JGame.Log.JLogCategory.Network);
+			}
 		}
 
 		public bool Initialized

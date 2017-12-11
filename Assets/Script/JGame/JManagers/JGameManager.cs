@@ -37,6 +37,22 @@ namespace JGame
 			get;
 		}
 
+		public bool ShutDown()
+		{
+			try
+			{
+				JLog.Info("JGameManager.ShutDown:Shut down server and client socket manager ...", JLogCategory.Network);
+				JServerSocketManager.SingleInstance.ShutDown ();
+				JClientSocketManager.SingleInstance.ShutDown ();		
+				JLog.Info("JGameManager.ShutDown:Shut down server and client socket manager finished.", JLogCategory.Network);
+			}
+			catch (Exception e) {
+				JLog.Error ("JGameManager.ShutDown:" + e.Message);
+				return false;
+			}
+			return true;
+		}
+
 		public void initialize(bool bServer, string serverIP, int serverPort)
 		{
 			_typeToTypeName = new Dictionary<ushort, string> ();
