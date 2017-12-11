@@ -114,7 +114,7 @@ namespace JGame.Network
 							{
 								JConnectedClientSocket.sockets.Add(currentConnectedSocket);
 
-								JLog.Info("client connected :"+currentConnectedSocket.RemoteEndPoint.ToString(), JGame.Log.JLogCategory.Network);
+								JLog.Info("client connected :"+(currentConnectedSocket.RemoteEndPoint as IPEndPoint).Address.ToString(), JGame.Log.JLogCategory.Network);
 								_semaphore.Release();
 							}
 						}
@@ -173,6 +173,7 @@ namespace JGame.Network
 						byte[] recBuffer = new byte[JTcpDefines.max_buffer_size];
 						int recLen = socket.Receive (recBuffer);
 						if (recLen > 0) {
+							JLog.Info("receive one packet from client : IP" + (socket.RemoteEndPoint as IPEndPoint).Address.ToString() + " len:" + recLen.ToString());
 							//save the received data
 							JNetworkDataOperator.ReceiveData(recLen, recBuffer, socket.RemoteEndPoint);
 
