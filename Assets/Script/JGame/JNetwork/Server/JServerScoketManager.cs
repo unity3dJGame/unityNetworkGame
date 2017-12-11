@@ -141,7 +141,7 @@ namespace JGame.Network
 				if (_forceEnd)
 					break;
 				
-				if (_semaphore.WaitOne())
+				if (_semaphore.WaitOne(1))
 				{
 					lock (_socketLocker)
 					{
