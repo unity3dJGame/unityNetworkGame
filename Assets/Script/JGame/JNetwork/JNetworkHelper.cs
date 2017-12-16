@@ -29,6 +29,7 @@ namespace JGame
 					JNetworkInteractiveData.SendData.Data.Enqueue (newData);
 					_sendSemaphore.Release ();
 				}
+				JLog.Debug("JNetworkDataOperator.SendData[byte [] data] : send one data.", JGame.Log.JLogCategory.Network);
 			}
 			public static void SendData(JPacketType packetType,  List<IStreamObj> objects)
 			{
@@ -55,8 +56,10 @@ namespace JGame
 			/// <param name="millisecondsTimeout">Milliseconds timeout. <0 wait always</param>
 			public static List<JNetworkData> TakeSendData(int millisecondsTimeout)
 			{
-				if (millisecondsTimeout < -1)
-					_sendSemaphore.WaitOne ();
+				if (millisecondsTimeout < 0) {
+					if (!_sendSemaphore.WaitOne ())
+						return null;
+				}
 				else {
 					if (!_sendSemaphore.WaitOne (millisecondsTimeout))
 						return null;
@@ -68,12 +71,15 @@ namespace JGame
 					lock (_sendLocker) {
 						while (JNetworkInteractiveData.SendData.Data.Count > 0)
 							listData.Add (JNetworkInteractiveData.SendData.Data.Dequeue ());
-					}
+					}						
+
 				}
 				catch (Exception e) {
 					JLog.Error ("TakeSendData:" + e.Message, JGame.Log.JLogCategory.Network);
 				}
 
+				JLog.Debug("JNetworkDataOperator.TakeSendData : take all send data count:"
+					+ listData.Count.ToString(), JGame.Log.JLogCategory.Network);
 				return listData;
 			}
 				
@@ -91,6 +97,7 @@ namespace JGame
 						JNetworkInteractiveData.ReceivedData.Data.Enqueue(networkData);
 						_receivedSemaphore.Release();
 					}
+					JLog.Debug("JNetworkDataOperator.ReceiveData : added one data to received data queue", JGame.Log.JLogCategory.Network);
 				}
 				catch (Exception e) {
 					JLog.Error ("ReceiveData:" + e.Message, JGame.Log.JLogCategory.Network);
@@ -106,9 +113,13 @@ namespace JGame
 
 				try{
 					lock (_receiveLocker) {
+						JLog.Debug("JNetworkDataOperator.TakeReceivedData : take all received data count:"
+							+ JNetworkInteractiveData.ReceivedData.Data.Count.ToString(),
+							JGame.Log.JLogCategory.Network);	
 						while (JNetworkInteractiveData.ReceivedData.Data.Count > 0)
 							listData.Add (JNetworkInteractiveData.ReceivedData.Data.Dequeue ());
 					}
+
 				}
 				catch (Exception e) {
 					JLog.Error ("TakeSendData:" + e.Message, JGame.Log.JLogCategory.Network);

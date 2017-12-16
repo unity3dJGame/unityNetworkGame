@@ -31,11 +31,5 @@ public class ServerManager : MonoBehaviour
 	void Start()
 	{
 	}
-
-	void Update()
-	{
-		if (ServerActive)
-			JLogic.Logic ();
-	}
 }
 

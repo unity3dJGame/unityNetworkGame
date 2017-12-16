@@ -22,6 +22,7 @@ namespace JGame
 				List<JPacketType> addedLocalData = JLocalDataHelper.takeData ();
 				if (addedLocalData.Count > 0)
 				{
+					JLog.Info ("JLogic.Logic find local data, count : " + addedLocalData.Count.ToString (), JGame.Log.JLogCategory.Network);
 					foreach (JPacketType data in addedLocalData) 
 					{
 						ProcessLocalData (data);
@@ -31,6 +32,7 @@ namespace JGame
 				List<JNetworkData> receivedData = JNetworkDataOperator.TakeReceivedData ();
 				if (receivedData.Count > 0) 
 				{
+					JLog.Info ("JLogic.Logic find network data, count : " + receivedData.Count.ToString (), JGame.Log.JLogCategory.Network);
 					DeSerialize (receivedData);
 					foreach (JNetworkData data in receivedData) 
 					{
@@ -68,7 +70,7 @@ namespace JGame
 				{
 					JInputStream stream = new JInputStream (data.Data);
 					JBinaryReaderWriter.Read<ushort> (stream);
-					while (stream.Stream.CanRead)
+					if (stream.Stream.CanRead)
 					{
 						IStreamObj obj = JBinaryReaderWriter.Read<IStreamObj> (stream);
 						if (null == obj)

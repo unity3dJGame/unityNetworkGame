@@ -11,7 +11,7 @@ namespace JGame
 		{
 			public static void RegisterServerProcessor()
 			{
-				JLogicHelper.registerProcessor (JPacketType.npt_signin_req, new JProcesserSignInServer (), false);
+				JLogicHelper.registerProcessor (JPacketType.npt_signin_req, new JProcesserSignInServer (), true);
 			}
 
 			public static void RegisterClientProcessor()

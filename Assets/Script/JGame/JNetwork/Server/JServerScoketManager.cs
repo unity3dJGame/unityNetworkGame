@@ -63,6 +63,8 @@ namespace JGame.Network
 
 			JLog.Info ("JServerSocketManager begin to initialize :", JGame.Log.JLogCategory.Network);
 
+			JNetworkServerInfo.ServerIP = serverIP;
+			JNetworkServerInfo.ServerPort = serverPort;
 			_socketLocker = new object ();
 			_semaphore = new Semaphore (0, 1);
 			JNetworkInteractiveData.ReceivedData = new JNetworkDataQueue ();
@@ -145,21 +147,17 @@ namespace JGame.Network
 				if (_forceEnd)
 					break;
 				
-				if (_semaphore.WaitOne(1))
-				{
+				if (_semaphore.WaitOne (1)) {
 					JLog.Info ("JServerSocketManager ReceiveLoop _semaphore.WaitOne(1) success", JGame.Log.JLogCategory.Network);
-					lock (_socketLocker)
-					{
-						foreach (Socket socket in JConnectedClientSocket.sockets) 
-						{
+					lock (_socketLocker) {
+						foreach (Socket socket in JConnectedClientSocket.sockets) {
 							clientScokets.Add (socket);
 						}	
-						JLog.Info ("JServerSocketManager ReceiveLoop add socket to clientsockets: count - "+clientScokets.Count.ToString(), JGame.Log.JLogCategory.Network);
+						JLog.Info ("JServerSocketManager ReceiveLoop add socket to clientsockets: count - " + clientScokets.Count.ToString (), JGame.Log.JLogCategory.Network);
 					}
 
 					JLog.Debug ("connected client sockets : " + clientScokets.Count.ToString (), JGame.Log.JLogCategory.Network);
-				}
-
+				} 
 				if (clientScokets.Count == 0 ) {
 					_semaphore.WaitOne ();
 					_semaphore.Release();
@@ -183,9 +181,10 @@ namespace JGame.Network
 					try
 					{
 						byte[] recBuffer = new byte[JTcpDefines.max_buffer_size];
+						JLog.Info("try to receive from socket : "+ (socket.RemoteEndPoint as IPEndPoint).Address.ToString(),JGame.Log.JLogCategory.Network);
 						int recLen = socket.Receive (recBuffer);
 						if (recLen > 0) {
-							JLog.Info("receive one packet from client : IP" + (socket.RemoteEndPoint as IPEndPoint).Address.ToString() + " len:" + recLen.ToString());
+							JLog.Info("receive one packet from client : IP" + (socket.RemoteEndPoint as IPEndPoint).Address.ToString() + " len:" + recLen.ToString(), JGame.Log.JLogCategory.Network);
 							//save the received data
 							JNetworkDataOperator.ReceiveData(recLen, recBuffer, socket.RemoteEndPoint);
 
@@ -203,28 +202,36 @@ namespace JGame.Network
 						}
 					}
 					catch (Exception e) {
-						JLog.Error ("JServerSocketManager ReceiveLoop exception error message:" + e.Message, JGame.Log.JLogCategory.Network);
+						JLog.Error ("JServerSocketManager ReceiveLoop exception error message1:" + e.Message, JGame.Log.JLogCategory.Network);
 					}
 				}
 
-				//remove disconnected socket form list
-				if (disconnectedSockets.Count > 0) {
+				try
+				{
+					//remove disconnected socket form list
+					if (disconnectedSockets.Count > 0) {
+						lock (_socketLocker) {
+							foreach ( Socket socket in disconnectedSockets)
+							{
+								JConnectedClientSocket.sockets.Remove (socket);
+								clientScokets.Remove (socket);
+							}
+						}
+					}
+
+
+					//add old sockets to client sockets
 					lock (_socketLocker) {
-						foreach ( Socket socket in disconnectedSockets)
+						foreach ( Socket socket in JConnectedClientSocket.sockets)
 						{
-							JConnectedClientSocket.sockets.Remove (socket);
-							clientScokets.Remove (socket);
+							clientScokets.Add (socket);
 						}
 					}
 				}
-
-				//add old sockets to client sockets
-				lock (_socketLocker) {
-					foreach ( Socket socket in JConnectedClientSocket.sockets)
-					{
-						clientScokets.Add (socket);
-					}
+				catch (Exception e) {
+					JLog.Error ("JServerSocketManager ReceiveLoop exception error message2:" + e.Message, JGame.Log.JLogCategory.Network);
 				}
+
 
 			}
 
@@ -250,6 +257,7 @@ namespace JGame.Network
 							try
 							{
 								socket.Send (data.Data);
+								JLog.Info("send one data to "+(socket.RemoteEndPoint as IPEndPoint).Address.ToString(), JGame.Log.JLogCategory.Network);
 							}
 							catch(Exception e) {
 								JLog.Error ("SendLoop error message:" + e.Message, JGame.Log.JLogCategory.Network);

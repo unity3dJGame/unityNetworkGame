@@ -10,7 +10,7 @@ namespace JGame.Network
 
 	public class JTcpDefines
 	{
-		public static int max_buffer_size = 1024;
+		public static int max_buffer_size = 4096;
 		public static int min_buffer_size = 2;
 		public static int max_tcp_connect = 1000;
 	};
